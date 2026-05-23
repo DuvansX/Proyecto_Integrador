@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class Person {
 
-    String name;
-    String documentId;
-    String birthDate;
-    String gender;
-    String stateCivil;
-    String rh;
-    String email;
-    DatosLaborales datosLaborales;
-    ArrayList<SituacionAdministrativa> situaciones = new ArrayList<>();
+    private String name;
+    private String documentId;
+    private String birthDate;
+    private String gender;
+    private String stateCivil;
+    private String rh;
+    private String email;
+    private DatosLaborales datosLaborales;
+    private ArrayList<SituacionAdministrativa> situaciones = new ArrayList<>();
 
     public Person(
             String name,
@@ -33,7 +33,14 @@ public class Person {
         this.datosLaborales = datosLaborales;
     }
 
+    public String getName() { return name; }
     public String getDocumentId() { return documentId; }
+    public String getBirthDate() { return birthDate; }
+    public String getGender() { return gender; }
+    public String getStateCivil() { return stateCivil; }
+    public String getRh() { return rh; }
+    public String getEmail() { return email; }
+    public DatosLaborales getDatosLaborales() { return datosLaborales; }
     public ArrayList<SituacionAdministrativa> getSituaciones() { return situaciones; }
 
     public boolean tieneSituacionActivaEnFecha(String fechaInicio, String fechaFin) {
@@ -49,9 +56,6 @@ public class Person {
         return !(fin2.compareTo(ini1) < 0 || fin1.compareTo(ini2) < 0);
     }
 
-
-
-    // Verificacion de los datos ingresados por el usuario.
     @Override
     public String toString() {
         return "Nombre: " + name +
@@ -63,6 +67,5 @@ public class Person {
                 ", Email: " + email +
                 ", Datos laborales: " + datosLaborales +
                 ", Situaciones administrativas: " + situaciones;
-    
     }
 }

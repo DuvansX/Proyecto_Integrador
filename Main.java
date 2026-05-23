@@ -5,67 +5,98 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
-    Scanner scanner = new Scanner(System.in);
-    ArrayList<Person> personas = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
-
-        Main main = new Main(); // Creacion metodos no estaticos.
-        boolean running = true; // verificar para que el programa siga corriendo.
-        while (running) {
-            main.showMenu();
-
-            int option = main.scanner.nextInt();
-            main.scanner.nextLine(); // limpiar buffer
-
-            switch (option) {
-
-                case 0:
-                    // Salir
-                    running = false;
-                    System.out.println("Saliendo del programa...");
-                    break;
-
-                case 1:
-                    // Crear persona
-                    Person person = main.createPerson();
-                    main.personas.add(person);
-
-                    System.out.println("Persona creada correctamente");
-                    break;
-
-                case 2:
-                    // Mostrar personas
-                    for (Person p : main.personas) {
-                        System.out.println(p);
-                    }
-                    break;
-
-                case 3:
-                    // Registrar situación administrativa
-                    main.registrarSituacion();
-                    break;
-
-                case 4:
-                    // Consultar situación actual de un servidor
-                    main.consultarSituacion();
-                    break;
-
-                default:
-                    System.out.println("Opción inválida");
+    private static int leerEntero(String mensaje) {
+        while (true) {
+            try {
+                System.out.print(mensaje);
+                int val = Integer.parseInt(scanner.nextLine());
+                return val;
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingrese un número entero válido.");
             }
         }
     }
 
+    private ArrayList<Person> personas = new ArrayList<>();
+
+    public static void main(String[] args) {
+        Main app = new Main();
+
+        int opcion;
+        do {
+            app.showMenu();
+            opcion = Main.leerEntero("Seleccione una opción: ");
+            switch (opcion) {
+                case 1:
+                    app.menuPersonal();
+                    break;
+                case 2:
+                    app.menuSituaciones();
+                    break;
+                case 0:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcion != 0);
+    }
+
     // Menu de opciones
     public void showMenu() {
-        System.out.println("----------- PANEL DE CONTROL -----------");
+        System.out.println("=========================================");
+        System.out.println("  SISTEMA DE GESTIÓN DE PERSONAL PÚBLICO");
+        System.out.println("=========================================");
+        System.out.println("1. Gestión de Personal");
+        System.out.println("2. Situación Administrativa");
+        System.out.println("3. Control de Vacaciones");
+        System.out.println("4. Beneficios e Incentivos");
         System.out.println("0. Salir");
-        System.out.println("1. Crear persona");
-        System.out.println("2. Mostrar personas");
-        System.out.println("3. Registrar situación administrativa");
-        System.out.println("4. Consultar situación actual de un servidor");
-        System.out.println("----------------------------------------");
+        System.out.println("=========================================");
+    }
+
+    private void menuPersonal() {
+        int op;
+        do {
+            System.out.println("--- GESTIÓN DE PERSONAL ---");
+            System.out.println("1. Agregar Empleado");
+            System.out.println("2. Ver Lista de Empleados");
+            System.out.println("3. Buscar Empleado");
+            System.out.println("0. Volver");
+            op = Main.leerEntero("Opción: ");
+            switch (op) {
+                case 1:
+                    createPerson();
+                    break;
+                case 2:
+                    listarPersonas();
+                    break;
+                case 3:
+                    buscarPersona();
+                    break;
+            }
+        } while (op != 0);
+    }
+
+    private void menuSituaciones() {
+        int op;
+        do {
+            System.out.println("--- SITUACIÓN ADMINISTRATIVA ---");
+            System.out.println("1. Registrar Situación");
+            System.out.println("2. Consultar Situación");
+            System.out.println("0. Volver");
+            op = Main.leerEntero("Opción: ");
+            switch (op) {
+                case 1:
+                    registrarSituacion();
+                    break;
+                case 2:
+                    consultarSituacion();
+                    break;
+            }
+        } while (op != 0);
     }
 
     // Creacion de la perosna con sus validaciones.
@@ -137,12 +168,67 @@ public class Main {
 
         System.out.println("Ingrese el email");
         String email = scanner.nextLine();
-        // Crear y retornar la persona al arraylist .
-        return new Person(name, documentId, birthDate, gender, stateCivil, rh, email, createDatosLaborales());
+
+        Person persona = new Person(name, documentId, birthDate, gender, stateCivil, rh, email, createDatosLaborales());
+        personas.add(persona);
+        return persona;
+    }
+
+    // Listar las personas registradas en el sistema.
+    private void listarPersonas() {
+        System.out.println("==== Lista de Empleados Actual ====");
+        if (personas.isEmpty()) {
+            System.out.println("No hay empleados.");
+            return;
+        }
+        for (Person p : personas) {
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("=".repeat(80));
+            System.out.printf("| %-15s | %-30s | %-25s |%n", "Documento", "Nombre", "Email");
+            System.out.println("-".repeat(80));
+            System.out.printf("| %-15s | %-30s | %-25s |%n",
+                    p.getDocumentId(), p.getName(), p.getEmail());
+            System.out.println("-".repeat(80));
+            System.out.printf("| %-12s | %-10s | %-12s | %-10s | %-15s |%n",
+                    "F. Nacimiento", "Género", "Estado Civil", "RH", "Tipo Vinculación");
+            System.out.println("-".repeat(80));
+            System.out.printf("| %-12s | %-10s | %-12s | %-10s | %-15s |%n",
+                    p.getBirthDate(), p.getGender(), p.getStateCivil(), p.getRh(),
+                    p.getDatosLaborales().getTipoVinculacion());
+            System.out.println("-".repeat(80));
+            System.out.printf("| %-15s | %-12s | %-8s | %-8s | %-12s | %-10s |%n",
+                    "Dependencia", "Cargo", "Código", "Grado", "F. Ingreso", "Asignación");
+            System.out.println("-".repeat(80));
+            System.out.printf("| %-15s | %-12s | %-8s | %-8s | %-12s | %-10.2f |%n",
+                    p.getDatosLaborales().getDependencia(),
+                    p.getDatosLaborales().getCargo(),
+                    p.getDatosLaborales().getCodigo(),
+                    p.getDatosLaborales().getGrado(),
+                    p.getDatosLaborales().getFechaIngreso(),
+                    p.getDatosLaborales().getAsignacionMensual());
+            System.out.println("=".repeat(80));
+        }
+        System.out.println();
+        System.out.println("Total empleados: " + personas.size());
+        System.out.println();
+    }
+
+    // Busqueda de la persona
+    public Person buscarPersona() {
+        System.out.println("Ingrese el documento del servidor");
+        String documentId = scanner.nextLine();
+        Person p = buscarPersona(documentId);
+        if (p == null) {
+            System.out.println("Error: no se encontró una persona con ese documento.");
+        } else {
+            System.out.println(p);
+        }
+        return p;
     }
 
     // ASignacion datos laborales a la persona creada con sus validaciones.
-
     public DatosLaborales createDatosLaborales() {
 
         String dependencia;
@@ -210,10 +296,7 @@ public class Main {
             System.out.println("Error: la asignación mensual solo puede contener números.");
         }
 
-        // Crear y retornar los datos laborales para asignarlos a la persona.
-
         return new DatosLaborales(dependencia, cargo, codigo, grado, tipoVinculacion, fechaIngreso, asignacionMensual);
-
     }
 
     // Registro de la situacion administrativa de un servidor.
@@ -286,7 +369,6 @@ public class Main {
             System.out.println("Error: opción inválida.");
         }
 
-
         String fechaInicio;
         while (true) {
             System.out.println("Ingrese la fecha de inicio (dd/MM/yyyy)");
@@ -305,7 +387,6 @@ public class Main {
             System.out.println("Error: formato inválido. Use dd/MM/yyyy.");
         }
 
-        // Regla de negocio crítica
         if (persona.tieneSituacionActivaEnFecha(fechaInicio, fechaFin)) {
             System.out.println("Error: el servidor ya tiene una situación administrativa activa en esas fechas.");
             return;
@@ -331,18 +412,18 @@ public class Main {
             return;
         }
 
-        System.out.println("---- Situaciones de5: " + doc + " ----");
-        for (SituacionAdministrativa s : situaciones) { // muestra las situaciones administrativas de la persona buscada
+        System.out.println("---- Situaciones de: " + doc + " ----");
+        for (SituacionAdministrativa s : situaciones) {
             System.out.println(s);
         }
     }
 
     public Person buscarPersona(String documentId) {
-        for (Person p : personas) { // <-- busca las personas 
-            if (p.getDocumentId().equals(documentId)) { // compara el documento ingresado con el de cada persona
-                return p; //retorna la persona si encuentra una coincidencia
+        for (Person p : personas) {
+            if (p.getDocumentId().equals(documentId)) {
+                return p;
             }
         }
-        return null; // si no lo encuentra retoneara nulll y se muestra el mesje de la linea 2263
+        return null;
     }
 }
