@@ -33,15 +33,41 @@ public class Person {
         this.datosLaborales = datosLaborales;
     }
 
-    public String getName() { return name; }
-    public String getDocumentId() { return documentId; }
-    public String getBirthDate() { return birthDate; }
-    public String getGender() { return gender; }
-    public String getStateCivil() { return stateCivil; }
-    public String getRh() { return rh; }
-    public String getEmail() { return email; }
-    public DatosLaborales getDatosLaborales() { return datosLaborales; }
-    public ArrayList<SituacionAdministrativa> getSituaciones() { return situaciones; }
+    public String getName() {
+        return name;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getStateCivil() {
+        return stateCivil;
+    }
+
+    public String getRh() {
+        return rh;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public DatosLaborales getDatosLaborales() {
+        return datosLaborales;
+    }
+
+    public ArrayList<SituacionAdministrativa> getSituaciones() {
+        return situaciones;
+    }
 
     public boolean tieneSituacionActivaEnFecha(String fechaInicio, String fechaFin) {
         for (SituacionAdministrativa s : situaciones) {

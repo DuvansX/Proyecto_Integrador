@@ -14,9 +14,25 @@ public class SituacionAdministrativa {
         this.activa = true;
     }
 
-    public String getFechaInicio() { return fechaInicio; }
-    public String getFechaFin() { return fechaFin; }
-    public boolean isActiva() { return activa; }
+    public String getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public String getFechaFin() {
+        return fechaFin;
+    }
+
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
 
     @Override
     public String toString() {

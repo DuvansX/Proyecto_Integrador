@@ -27,13 +27,33 @@ public class DatosLaborales {
         this.asignacionMensual = asignacionMensual;
     }
 
-    public String getDependencia() { return dependencia; }
-    public String getCargo() { return cargo; }
-    public String getCodigo() { return codigo; }
-    public String getGrado() { return grado; }
-    public String getTipoVinculacion() { return tipoVinculacion; }
-    public String getFechaIngreso() { return fechaIngreso; }
-    public double getAsignacionMensual() { return asignacionMensual; }
+    public String getDependencia() {
+        return dependencia;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public String getGrado() {
+        return grado;
+    }
+
+    public String getTipoVinculacion() {
+        return tipoVinculacion;
+    }
+
+    public String getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public double getAsignacionMensual() {
+        return asignacionMensual;
+    }
 
     @Override
     public String toString() {
