@@ -11,6 +11,10 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static final String RUTA_ARCHIVO = "lib/personas.txt";
     private ArrayList<Person> personas = new ArrayList<>();
+    // Códigos de color para la terminal
+    private static final String VERDE = "001B[32m";
+    private static final String ROJO = "001B[31m";
+    private static final String RESET = "001B[0m";
 
     // ===================== MAIN =====================
 
@@ -752,7 +756,7 @@ public class Main {
 
         // Si tiene más de 15 días sin usar, le mostramos una advertencia
         if (pendientes > 15) {
-            System.out.println("  *** ALERTA: adeuda más de un período de vacaciones ***");
+            System.out.println("=== ALERTA: adeuda más de un período de vacaciones ===");
         }
 
         System.out.println("-".repeat(60));
@@ -765,7 +769,11 @@ public class Main {
             if (s.getTipo().equalsIgnoreCase("Vacaciones")) {
                 int dias = diasEntreFechas(s.getFechaInicio(), s.getFechaFin());
                 // Si activa=true está pendiente, si activa=false ya fue disfrutada
-                String estado = s.isActiva() ? "Pendiente aprobación" : "Disfrutada";
+                // Si activa=true está pendiente (verde), si activa=false ya fue disfrutada
+                // (rojo)
+                String estado = s.isActiva()
+                        ? VERDE + "Pendiente aprobación" + RESET
+                        : ROJO + "Disfrutada" + RESET;
                 System.out.printf("  Del %s al %s — %d días — %s%n",
                         s.getFechaInicio(), s.getFechaFin(), dias, estado);
                 hay = true;

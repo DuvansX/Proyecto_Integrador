@@ -36,9 +36,18 @@ public class SituacionAdministrativa {
 
     @Override
     public String toString() {
+        String VERDE = "\u001B[32m";
+        String ROJO = "\u001B[31m";
+        String RESET = "\u001B[0m";
+
+        // Si está activa pinta el estado en verde, si no en rojo
+        String estadoColoreado = activa
+                ? VERDE + "Activa" + RESET
+                : ROJO + "Inactiva" + RESET;
+
         return "Tipo: " + tipo +
                 ", Fecha inicio: " + fechaInicio +
                 ", Fecha fin: " + fechaFin +
-                ", Estado: " + (activa ? "Activa" : "Inactiva");
+                ", Estado: " + estadoColoreado;
     }
 }
