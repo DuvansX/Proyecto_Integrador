@@ -1,26 +1,28 @@
 import proyecto_integrador.models.DatosLaborales;
 import proyecto_integrador.models.Person;
 import proyecto_integrador.models.SituacionAdministrativa;
+import proyecto_integrador.models.Incentivo;
+import proyecto_integrador.models.SaludOcupacional;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.io.*;
+import java.io.*; // para manejo de archivos
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-    private static final String RUTA_ARCHIVO = "lib/personas.txt";
+    private static final String RUTA_ARCHIVO = "lib/personas.txt"; // ruta del archivo donde se guardan los datos
     private ArrayList<Person> personas = new ArrayList<>();
     // Códigos de color para la terminal
-    private static final String VERDE = "001B[32m";
-    private static final String ROJO = "001B[31m";
-    private static final String RESET = "001B[0m";
+    private static final String VERDE = "\u001B[32m";
+    private static final String ROJO = "\u001B[31m";
+    private static final String RESET = "\u001B[0m";
 
     // ===================== MAIN =====================
 
     public static void main(String[] args) {
         Main app = new Main();
-        app.cargarDatos();
+        app.cargarDatos(); // Se cargan los datos al iniciar el cod
         int opcion;
         do {
             app.showMenu();
@@ -34,6 +36,12 @@ public class Main {
                     break;
                 case 3:
                     app.menuVacaciones();
+                    break;
+                case 4:
+                    app.menuIncentivos();
+                    break;
+                case 5:
+                    app.menuSalud();
                     break;
                 case 0:
                     System.out.println("Saliendo del sistema...");
@@ -54,6 +62,7 @@ public class Main {
         System.out.println("2. Situación Administrativa");
         System.out.println("3. Control de Vacaciones");
         System.out.println("4. Beneficios e Incentivos");
+        System.out.println("5. Seguridad y Salud en el Trabajo");
         System.out.println("0. Salir");
         System.out.println("=========================================");
     }
@@ -107,7 +116,7 @@ public class Main {
                     finalizarSituacion();
                     break;
                 case 0:
-                    return;
+                    return; // si elige volver, se retorna sin hacer nada
             }
         } while (op != 0);
     }
@@ -153,6 +162,7 @@ public class Main {
 
     // ===================== GESTIÓN DE PERSONAL =====================
 
+    // Creacion de la persona con sus validaciones.
     public Person createPerson() {
         String name;
         while (true) {
@@ -218,11 +228,12 @@ public class Main {
 
         Person persona = new Person(name, documentId, birthDate, gender, stateCivil, rh, email, createDatosLaborales());
         personas.add(persona);
-        guardarDatos();
+        guardarDatos(); // se guardan los datos cada vez que se crea una persona nueva
         System.out.println("Persona creada exitosamente.");
         return persona;
     }
 
+    // Listar las personas registradas en el sistema.
     private void listarPersonas() {
         System.out.println("==== Lista de Empleados Actual ====");
         if (personas.isEmpty()) {
@@ -261,6 +272,7 @@ public class Main {
         System.out.println();
     }
 
+    // Busqueda de la persona por documento, muestra todos sus datos si la encuentra
     public Person buscarPersona() {
         System.out.println("Ingrese el documento de la persona");
         String documentId = scanner.nextLine();
@@ -274,16 +286,17 @@ public class Main {
     }
 
     public Person buscarPersona(String documentId) {
-        for (Person p : personas) {
-            if (p.getDocumentId().equals(documentId)) {
-                return p;
+        for (Person p : personas) { // <-- busca las personas
+            if (p.getDocumentId().equals(documentId)) { // compara el documento ingresado con el de cada persona
+                return p; // retorna la persona si encuentra una coincidencia
             }
         }
-        return null;
+        return null; // si no lo encuentra retornara null y se muestra el mensaje de error
     }
 
     // ===================== DATOS LABORALES =====================
 
+    // ASignacion datos laborales a la persona creada con sus validaciones.
     public DatosLaborales createDatosLaborales() {
 
         String dependencia;
@@ -356,6 +369,7 @@ public class Main {
 
     // ===================== SITUACIÓN ADMINISTRATIVA =====================
 
+    // Registro de la situacion administrativa de un servidor.
     public void registrarSituacion() {
         System.out.println("Ingrese el documento de la persona");
         String doc = scanner.nextLine();
@@ -422,7 +436,7 @@ public class Main {
                     tipo = "Comisión";
                     break;
                 case "0":
-                    return;
+                    return; // si elige volver, se retorna sin hacer nada
                 default:
                     tipo = null;
             }
@@ -456,7 +470,7 @@ public class Main {
 
         persona.getSituaciones().add(new SituacionAdministrativa(tipo, fechaInicio, fechaFin));
         System.out.println("Situación registrada correctamente.");
-        guardarDatos();
+        guardarDatos(); // se guardan los datos cada vez que se registra una situacion
     }
 
     public void consultarSituacion() {
@@ -476,7 +490,7 @@ public class Main {
         }
 
         System.out.println("==== Situaciones de: " + doc + " ====");
-        for (SituacionAdministrativa s : situaciones) {
+        for (SituacionAdministrativa s : situaciones) { // muestra las situaciones administrativas de la persona buscada
             System.out.println(s);
         }
     }
@@ -507,7 +521,7 @@ public class Main {
         while (true) {
             op = Main.leerEntero("Seleccione la situación a finalizar (0 para cancelar): ");
             if (op == 0)
-                return;
+                return; // si elige cancelar, se retorna sin hacer nada
             if (op > 0 && op <= situaciones.size())
                 break;
             System.out.println("Error: opción inválida.");
@@ -519,9 +533,9 @@ public class Main {
             return;
         }
 
-        seleccionada.setActiva(false);
+        seleccionada.setActiva(false); // se marca la situación como inactiva
         System.out.println("Situación finalizada correctamente.");
-        guardarDatos();
+        guardarDatos(); // se guardan los datos cada vez que se finaliza una situacion
     }
 
     // ===================== CONTROL DE VACACIONES =====================
@@ -536,7 +550,7 @@ public class Main {
         LocalDate ingreso = LocalDate.of(
                 Integer.parseInt(partes[2]), // año
                 Integer.parseInt(partes[1]), // mes
-                Integer.parseInt(partes[0]));// día
+                Integer.parseInt(partes[0])); // día
 
         // Contamos cuántos años completos han pasado desde que entró hasta hoy
         long anios = ChronoUnit.YEARS.between(ingreso, LocalDate.now());
@@ -768,7 +782,6 @@ public class Main {
         for (SituacionAdministrativa s : persona.getSituaciones()) {
             if (s.getTipo().equalsIgnoreCase("Vacaciones")) {
                 int dias = diasEntreFechas(s.getFechaInicio(), s.getFechaFin());
-                // Si activa=true está pendiente, si activa=false ya fue disfrutada
                 // Si activa=true está pendiente (verde), si activa=false ya fue disfrutada
                 // (rojo)
                 String estado = s.isActiva()
@@ -851,13 +864,258 @@ public class Main {
         System.out.println("=".repeat(60));
     }
 
+    // ===================== BENEFICIOS E INCENTIVOS (RF-04) =====================
+
+    private void menuIncentivos() {
+        int op;
+        do {
+            System.out.println("================================");
+            System.out.println("   BENEFICIOS E INCENTIVOS      ");
+            System.out.println("================================");
+            System.out.println("1. Registrar Incentivo");
+            System.out.println("2. Consultar Incentivos");
+            System.out.println("0. Volver");
+            System.out.println("================================");
+            op = Main.leerEntero("Opción: ");
+            switch (op) {
+                case 1:
+                    registrarIncentivo();
+                    break;
+                case 2:
+                    consultarIncentivos();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (op != 0);
+    }
+
+    // Registra un incentivo para una persona.
+    // Controla que cumpleaños solo se registre una vez por año,
+    // y que los demás tipos no se repitan más de una vez por período.
+    private void registrarIncentivo() {
+        System.out.println("Ingrese el documento de la persona");
+        String doc = scanner.nextLine();
+
+        Person persona = buscarPersona(doc);
+        if (persona == null) {
+            System.out.println("Error: no se encontró una persona con ese documento.");
+            return;
+        }
+
+        System.out.println("================================");
+        System.out.println("Tipos de incentivo:");
+        System.out.println("1. Cumpleaños (Celebra la Vida)");
+        System.out.println("2. Tiempo de servicio");
+        System.out.println("3. Reconocimiento");
+        System.out.println("4. Capacitación");
+        System.out.println("================================");
+
+        String tipo;
+        while (true) {
+            String op = scanner.nextLine();
+            switch (op) {
+                case "1":
+                    tipo = "Cumpleaños";
+                    break;
+                case "2":
+                    tipo = "Tiempo de servicio";
+                    break;
+                case "3":
+                    tipo = "Reconocimiento";
+                    break;
+                case "4":
+                    tipo = "Capacitación";
+                    break;
+                default:
+                    tipo = null;
+            }
+            if (tipo != null)
+                break;
+            System.out.println("Error: opción inválida. Seleccione entre 1 y 4.");
+        }
+
+        String fecha;
+        while (true) {
+            System.out.println("Ingrese la fecha del incentivo (dd/MM/yyyy)");
+            fecha = scanner.nextLine();
+            if (fecha.matches("\\d{2}/\\d{2}/\\d{4}"))
+                break;
+            System.out.println("Error: formato inválido. Use dd/MM/yyyy.");
+        }
+
+        // Extraemos el año de la fecha ingresada para controlar duplicados por período
+        int anio = Integer.parseInt(fecha.split("/")[2]);
+
+        // Cumpleaños solo se puede registrar una vez por año
+        if (tipo.equals("Cumpleaños")) {
+            for (Incentivo inc : persona.getIncentivos()) {
+                if (inc.getTipo().equals("Cumpleaños") && inc.getAnio() == anio) {
+                    System.out.println("Error: el incentivo de cumpleaños ya fue registrado para el año " + anio + ".");
+                    return;
+                }
+            }
+        }
+
+        System.out.println("Ingrese una descripción del incentivo");
+        String descripcion = scanner.nextLine();
+
+        persona.getIncentivos().add(new Incentivo(tipo, descripcion, fecha, anio));
+        guardarDatos();
+        System.out.println("Incentivo registrado correctamente.");
+    }
+
+    // Muestra todos los incentivos de una persona ordenados por fecha de registro.
+    private void consultarIncentivos() {
+        System.out.println("Ingrese el documento de la persona");
+        String doc = scanner.nextLine();
+
+        Person persona = buscarPersona(doc);
+        if (persona == null) {
+            System.out.println("Error: no se encontró una persona con ese documento.");
+            return;
+        }
+
+        if (persona.getIncentivos().isEmpty()) {
+            System.out.println("La persona no tiene incentivos registrados.");
+            return;
+        }
+
+        System.out.println("=".repeat(60));
+        System.out.println("  INCENTIVOS — " + persona.getName());
+        System.out.println("=".repeat(60));
+        for (Incentivo inc : persona.getIncentivos()) {
+            System.out.println("  " + inc);
+        }
+        System.out.println("=".repeat(60));
+    }
+
+    // ===================== SEGURIDAD Y SALUD EN EL TRABAJO (RF-05) =====================
+
+    private void menuSalud() {
+        int op;
+        do {
+            System.out.println("================================");
+            System.out.println(" SEGURIDAD Y SALUD EN EL TRABAJO");
+            System.out.println("================================");
+            System.out.println("1. Registrar Evaluación Médica");
+            System.out.println("2. Consultar Evaluaciones Médicas");
+            System.out.println("0. Volver");
+            System.out.println("================================");
+            op = Main.leerEntero("Opción: ");
+            switch (op) {
+                case 1:
+                    registrarEvaluacionMedica();
+                    break;
+                case 2:
+                    consultarEvaluacionesMedicas();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (op != 0);
+    }
+
+    // Registra una evaluación médica ocupacional para una persona.
+    // El concepto puede ser: apto, apto con restricciones, no apto.
+    private void registrarEvaluacionMedica() {
+        System.out.println("Ingrese el documento de la persona");
+        String doc = scanner.nextLine();
+
+        Person persona = buscarPersona(doc);
+        if (persona == null) {
+            System.out.println("Error: no se encontró una persona con ese documento.");
+            return;
+        }
+
+        String fecha;
+        while (true) {
+            System.out.println("Ingrese la fecha de la evaluación (dd/MM/yyyy)");
+            fecha = scanner.nextLine();
+            if (fecha.matches("\\d{2}/\\d{2}/\\d{4}"))
+                break;
+            System.out.println("Error: formato inválido. Use dd/MM/yyyy.");
+        }
+
+        System.out.println("================================");
+        System.out.println("Concepto médico:");
+        System.out.println("1. Apto");
+        System.out.println("2. Apto con restricciones");
+        System.out.println("3. No apto");
+        System.out.println("================================");
+
+        String concepto;
+        while (true) {
+            String op = scanner.nextLine();
+            switch (op) {
+                case "1":
+                    concepto = "Apto";
+                    break;
+                case "2":
+                    concepto = "Apto con restricciones";
+                    break;
+                case "3":
+                    concepto = "No apto";
+                    break;
+                default:
+                    concepto = null;
+            }
+            if (concepto != null)
+                break;
+            System.out.println("Error: opción inválida. Seleccione entre 1 y 3.");
+        }
+
+        System.out.println("Ingrese observaciones (o presione Enter para omitir)");
+        String observaciones = scanner.nextLine();
+        if (observaciones.isEmpty())
+            observaciones = "Sin observaciones";
+
+        persona.getEvaluacionesMedicas().add(new SaludOcupacional(fecha, concepto, observaciones));
+        guardarDatos();
+        System.out.println("Evaluación médica registrada correctamente.");
+    }
+
+    // Muestra todas las evaluaciones médicas ocupacionales de una persona.
+    private void consultarEvaluacionesMedicas() {
+        System.out.println("Ingrese el documento de la persona");
+        String doc = scanner.nextLine();
+
+        Person persona = buscarPersona(doc);
+        if (persona == null) {
+            System.out.println("Error: no se encontró una persona con ese documento.");
+            return;
+        }
+
+        if (persona.getEvaluacionesMedicas().isEmpty()) {
+            System.out.println("La persona no tiene evaluaciones médicas registradas.");
+            return;
+        }
+
+        System.out.println("=".repeat(60));
+        System.out.println("  EVALUACIONES MÉDICAS — " + persona.getName());
+        System.out.println("=".repeat(60));
+        for (SaludOcupacional ev : persona.getEvaluacionesMedicas()) {
+            System.out.println("  " + ev);
+        }
+        System.out.println("=".repeat(60));
+    }
+
     // ===================== ARCHIVO DE DATOS =====================
 
     private void guardarDatos() {
-        File carpeta = new File("lib");
-        carpeta.mkdirs();
-        System.out.println("Guardando en: " + new File(RUTA_ARCHIVO).getAbsolutePath());
-        try (PrintWriter pw = new PrintWriter(new FileWriter(RUTA_ARCHIVO))) {
+        File carpeta = new File("lib"); // crea la carpeta "lib" si no existe para guardar el archivo de texto con los
+                                        // datos de las personas
+        carpeta.mkdirs(); // verifica si la carpeta llamada en file existe y si no la crea
+        System.out.println("Guardando en: " + new File(RUTA_ARCHIVO).getAbsolutePath()); // muestra la ruta absoluta del
+                                                                                         // archivo donde se guardan los
+                                                                                         // datos
+        try (PrintWriter pw = new PrintWriter(new FileWriter(RUTA_ARCHIVO))) { // abre el archivo para escribirlo, si no
+                                                                               // existe lo crea y si existe lo
+                                                                               // sobreescribe
             for (Person p : personas) {
                 pw.println(p.getName() + "," +
                         p.getDocumentId() + "," +
@@ -879,10 +1137,11 @@ public class Main {
             System.out.println("Error al guardar: " + e.getMessage());
         }
 
-        try (PrintWriter pw = new PrintWriter(new FileWriter("lib/situaciones.txt"))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("lib/situaciones.txt"))) { // archivo separado para
+                                                                                        // situaciones
             for (Person p : personas) {
                 for (SituacionAdministrativa s : p.getSituaciones()) {
-                    pw.println(p.getDocumentId() + "," +
+                    pw.println(p.getDocumentId() + "," + // documento para saber a quien pertenece la situacion
                             s.getTipo() + "," +
                             s.getFechaInicio() + "," +
                             s.getFechaFin() + "," +
@@ -892,42 +1151,108 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error al guardar situaciones: " + e.getMessage());
         }
+
+        // guarda los incentivos en un archivo separado
+        try (PrintWriter pw = new PrintWriter(new FileWriter("lib/incentivos.txt"))) {
+            for (Person p : personas) {
+                for (Incentivo inc : p.getIncentivos()) {
+                    pw.println(p.getDocumentId() + "," +
+                            inc.getTipo() + "," +
+                            inc.getDescripcion() + "," +
+                            inc.getFecha() + "," +
+                            inc.getAnio());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al guardar incentivos: " + e.getMessage());
+        }
+
+        // guarda las evaluaciones médicas en un archivo separado
+        try (PrintWriter pw = new PrintWriter(new FileWriter("lib/evaluaciones.txt"))) {
+            for (Person p : personas) {
+                for (SaludOcupacional ev : p.getEvaluacionesMedicas()) {
+                    pw.println(p.getDocumentId() + "," +
+                            ev.getFecha() + "," +
+                            ev.getConcepto() + "," +
+                            ev.getObservaciones());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al guardar evaluaciones médicas: " + e.getMessage());
+        }
     }
 
     private void cargarDatos() {
         File archivo = new File(RUTA_ARCHIVO);
         if (!archivo.exists())
-            return;
-        try (BufferedReader br = new BufferedReader(new FileReader(RUTA_ARCHIVO))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] d = linea.split(",");
+            return; // si el archivo no existe, no hay datos que cargar, se retorna sin hacer nada
+        try (BufferedReader br = new BufferedReader(new FileReader(RUTA_ARCHIVO))) { // abre el archivo para leerlo
+            String linea; // lee cada línea del archivo, cada línea representa una persona con sus datos
+                          // separados por comas
+            while ((linea = br.readLine()) != null) { // mientras haya líneas para leer, se procesa cada línea
+                String[] d = linea.split(","); // divide la línea en un arreglo de strings usando la coma como
+                                               // separador, cada elemento del arreglo corresponde a un dato de la
+                                               // persona
                 personas.add(new Person(
                         d[0], d[1], d[2], d[3], d[4], d[5], d[6],
-                        new DatosLaborales(d[7], d[8], d[9], d[10], d[11], d[12],
-                                Double.parseDouble(d[13]))));
+                        new DatosLaborales(d[7], d[8], d[9], d[10], d[11], d[12], // llenar los datos de las persoans
+                                Double.parseDouble(d[13])))); // metodo del parcero
             }
             System.out.println("Datos cargados: " + personas.size() + " empleados.");
         } catch (IOException e) {
             System.out.println("Error al cargar: " + e.getMessage());
         }
 
-        File archivoSituaciones = new File("lib/situaciones.txt");
+        File archivoSituaciones = new File("lib/situaciones.txt"); // carga las situaciones del archivo separado
         if (!archivoSituaciones.exists())
             return;
         try (BufferedReader br = new BufferedReader(new FileReader("lib/situaciones.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] d = linea.split(",");
-                Person persona = buscarPersona(d[0]);
+                Person persona = buscarPersona(d[0]); // busca la persona por documento
                 if (persona != null) {
                     SituacionAdministrativa s = new SituacionAdministrativa(d[1], d[2], d[3]);
-                    s.setActiva(Boolean.parseBoolean(d[4]));
+                    s.setActiva(Boolean.parseBoolean(d[4])); // restaura el estado activo o inactivo
                     persona.getSituaciones().add(s);
                 }
             }
         } catch (IOException e) {
             System.out.println("Error al cargar situaciones: " + e.getMessage());
+        }
+
+        // carga los incentivos guardados en el archivo separado
+        File archivoIncentivos = new File("lib/incentivos.txt");
+        if (!archivoIncentivos.exists())
+            return;
+        try (BufferedReader br = new BufferedReader(new FileReader("lib/incentivos.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] d = linea.split(",");
+                Person persona = buscarPersona(d[0]);
+                if (persona != null) {
+                    persona.getIncentivos().add(new Incentivo(d[1], d[2], d[3], Integer.parseInt(d[4])));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al cargar incentivos: " + e.getMessage());
+        }
+
+        // carga las evaluaciones médicas guardadas en el archivo separado
+        File archivoEvaluaciones = new File("lib/evaluaciones.txt");
+        if (!archivoEvaluaciones.exists())
+            return;
+        try (BufferedReader br = new BufferedReader(new FileReader("lib/evaluaciones.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] d = linea.split(",");
+                Person persona = buscarPersona(d[0]);
+                if (persona != null) {
+                    persona.getEvaluacionesMedicas().add(new SaludOcupacional(d[1], d[2], d[3]));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al cargar evaluaciones médicas: " + e.getMessage());
         }
     }
 

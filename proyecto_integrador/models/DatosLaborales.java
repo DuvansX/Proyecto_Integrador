@@ -2,6 +2,7 @@ package proyecto_integrador.models;
 
 public class DatosLaborales {
 
+    // todos privados para proteger los datos laborales del empleado
     private String dependencia;
     private String cargo;
     private String codigo;
@@ -27,6 +28,7 @@ public class DatosLaborales {
         this.asignacionMensual = asignacionMensual;
     }
 
+    // getters para acceder a cada dato laboral desde otras clases
     public String getDependencia() {
         return dependencia;
     }
@@ -55,6 +57,8 @@ public class DatosLaborales {
         return asignacionMensual;
     }
 
+    // muestra todos los datos laborales en texto plano, se usa en el toString de
+    // Person
     @Override
     public String toString() {
         return "Dependencia: " + dependencia +

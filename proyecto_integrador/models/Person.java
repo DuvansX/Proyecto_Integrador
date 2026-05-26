@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Person {
 
+    // todos los atributos son privados, se acceden solo por getters
     private String name;
     private String documentId;
     private String birthDate;
@@ -12,7 +13,12 @@ public class Person {
     private String rh;
     private String email;
     private DatosLaborales datosLaborales;
+    // lista de situaciones administrativas que ha tenido la persona
     private ArrayList<SituacionAdministrativa> situaciones = new ArrayList<>();
+    // lista de incentivos y beneficios del plan de bienestar recibidos por la persona
+    private ArrayList<Incentivo> incentivos = new ArrayList<>();
+    // lista de evaluaciones médicas ocupacionales de la persona
+    private ArrayList<SaludOcupacional> evaluacionesMedicas = new ArrayList<>();
 
     public Person(
             String name,
@@ -33,6 +39,7 @@ public class Person {
         this.datosLaborales = datosLaborales;
     }
 
+    // getters para leer cada dato personal desde otras clases
     public String getName() {
         return name;
     }
@@ -69,6 +76,17 @@ public class Person {
         return situaciones;
     }
 
+    public ArrayList<Incentivo> getIncentivos() {
+        return incentivos;
+    }
+
+    public ArrayList<SaludOcupacional> getEvaluacionesMedicas() {
+        return evaluacionesMedicas;
+    }
+
+    // verifica si la persona ya tiene una situación activa que se cruce con las
+    // fechas dadas
+    // esto evita registrar dos situaciones en el mismo rango de fechas
     public boolean tieneSituacionActivaEnFecha(String fechaInicio, String fechaFin) {
         for (SituacionAdministrativa s : situaciones) {
             if (s.isActiva() && seFechasSolapan(s.getFechaInicio(), s.getFechaFin(), fechaInicio, fechaFin)) {
@@ -78,10 +96,14 @@ public class Person {
         return false;
     }
 
+    // compara dos rangos de fechas para ver si se solapan entre sí
+    // si el fin del rango 2 es antes del inicio del 1, o el fin del 1 es antes del
+    // inicio del 2, no se solapan
     private boolean seFechasSolapan(String ini1, String fin1, String ini2, String fin2) {
         return !(fin2.compareTo(ini1) < 0 || fin1.compareTo(ini2) < 0);
     }
 
+    // muestra todos los datos de la persona en texto plano para debug o búsqueda
     @Override
     public String toString() {
         return "Nombre: " + name +
@@ -92,6 +114,8 @@ public class Person {
                 ", RH: " + rh +
                 ", Email: " + email +
                 ", Datos laborales: " + datosLaborales +
-                ", Situaciones administrativas: " + situaciones;
+                ", Situaciones administrativas: " + situaciones +
+                ", Incentivos: " + incentivos +
+                ", Evaluaciones médicas: " + evaluacionesMedicas;
     }
 }
