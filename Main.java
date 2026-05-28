@@ -18,8 +18,6 @@ public class Main {
     private static final String ROJO = "\u001B[31m";
     private static final String RESET = "\u001B[0m";
 
-    // ✅ Formatter centralizado — antes cada método parseaba fechas con split("/")
-    // manualmente
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final ArrayList<Person> personas = new ArrayList<>();
